@@ -21,6 +21,12 @@
               "development"
             ]
           },
+            {
+            "group": "Durable Links",
+            "pages": [
+              "Self hosting",
+            ]
+          },
           {
             "group": "Essentials",
             "pages": [
