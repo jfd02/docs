@@ -1,0 +1,17 @@
+---
+title: 'Overview'
+---
+
+If you are unfamiliar with what Durable Links are and the advantages they have over universal / App links, the [introduction](/durable-links/introduction) details that. The API's provided are built with previous Firebase Dynamic Link users in mind. The endpoints and request bodies are as close as possible to their implementation to try and ease the migration pains.
+
+To self host Durable Links, there are a few requirements neccesary to handle a seamless link to app flow.
+
+- A database to store the Durable Links you generate.
+- An API server your clients can use to generate Durable Links and exchange shortened URL's for the long version.
+- A server that handles redirecting, based on the parameters you specify in the Durable Link.
+- A domain to serve the Durable Links.
+
+The rest of this guide will go over how to setup each of these requirements, you can use the provided Go servers out-of-the-box or as a template for your own implementation. Hosting these servers is outside the scope of this tutorial, but the resources provided below will walk you through step by step on how to do so.
+
+- [How To Deploy a Go Web Application Using Nginx on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-go-web-application-using-nginx-on-ubuntu-18-04)
+- [How To Secure Nginx with Let's Encrypt on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-18-04)

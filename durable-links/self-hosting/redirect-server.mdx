@@ -1,0 +1,26 @@
+---
+title: 'Link redirecting'
+---
+
+After getting the Durable Link generation working from the [previous step](/durable-links/self-hosting/link-generation), you need a way to handle redirects. Similar to the link generation API, the fastest way to get started is by using the provided server at githublinkhere. Similar to the previous server setup, after cloning the repository you need to add a `.env` file in the root directory. Inside the `.env` file, you need to use the same `DATABASE_URL` that is used by the link generation server. Another requirement for Durable Links to work properly on iOS is to setup the apple-app-site-association.json file. For an explination on what this file is, visit https://developer.apple.com/documentation/xcode/supporting-associated-domains.
+
+For most use cases, you simply need to update the already existing file with your apps Application Identifier Prefix and Bundle Identifier. Go to https://developer.apple.com/account/resources/identifiers/list, click on the App with the identifier you are using for durable links, and you should use the value under App ID Prefix.
+``` json apple-app-site-association.json
+{
+  "applinks": {
+    "details": [
+      {
+        "appID": "YOUR_APP_ID_PREFIX.YOUR_BUNDLE_IDENTIFIER", // e.g., "324VV8B17M.com.yourcompany.appname"
+        "paths": [
+          "/*"
+        ]
+      }
+    ]
+  }
+}
+```
+
+You will need to add the associated domains entitlement to your iOS app, and that will be covered in the [iOS setup section.](/durable-links/self-hosting/ios-setup)
+
+Deploying the server to production is outside the scope of this tutorial, but you can use this guide from Digital Ocean to get setup quickly. You can skip *Step 1 — Building the Go Web Application* as the server has been provided already.
+https://www.digitalocean.com/community/tutorials/how-to-deploy-a-go-web-application-using-nginx-on-ubuntu-18-04

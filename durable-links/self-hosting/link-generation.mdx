@@ -1,0 +1,64 @@
+---
+title: 'Link generation'
+---
+
+The get a user from clicking a link into your app, you first need to start by generating the link. The quickest way to get started is by cloning the API server at https://github.com/apppanel/api. If you already have your own API your app uses, it might make more sense to implement the neccesary endpoints there, using the provided repository as a reference. This tutorial will assume you are using the provided API.
+
+The provided API is built to be used with a SQL database. The below table structure is what is used by the server, so you will need to setup your database identically unless you modify the API code to reflect different column names or types.
+
+📄 Table: durable_links
+
+| Column | Type | Description |
+|  -------- |  -------- |   -------- |
+| host | TEXT  | The host of the URL where the Durable Link is at, eg. acme.com  |
+| path | TEXT  | Short code that redirects to the long url with query params |
+| query_params | TEXT |  The raw query string  |
+| created_at | TIMESTAMPTZ | Timestamp of creation |
+| is_unguessable_path | BOOLEAN | Indicates if path is randomly generated |
+
+
+Primary Key (host, path) Uniquely identifies the Durable Link
+
+Now that you have the database setup, you can proceed to cloning the API repository. You will need to create a .env file in the root directory of the project. Inside the .env file, there is two config params you must provide for link generation to work, defaults have been provided for the other paramters, located inside of internal/config/config.go 
+
+```txt .env
+DATABASE_URL=postgres://username:password@host:port/database_name
+DOMAIN_ALLOW_LIST=acme.com
+```
+
+DOMAIN_ALLOW_LIST is the paramter that controls what links your Durable Links are allowed to redirect to. Without this allow list, someone could use your Durable Link to redirect to a site with nefarious intentions. By default, the server is setup to deny any requests (400) with a link that is not inside the allow list.
+
+Once you have the .env file setup, you can open a terminal in the root directory and run the following command:
+```
+go run cmd/server/main.go
+```
+
+You should see the following log statements in the console
+```
+8:39PM INF Successfully connected to database
+8:39PM INF Server starting on port 9010
+```
+If the server doesn't start properly try to debug using any provided error messages before opening an issue on the GitHub repository.
+
+At this point you are now able to generate Durable Links. For a list of all available parameters, check out the API Reference
+
+```
+curl --location 'http://localhost:9010/v1/shortLinks' \
+--header 'Content-Type: application/json' \
+--data '{
+  "durableLinkInfo": {
+    "host": "octal.page.link",
+    "link": "https://news.ycombinator.com/",
+    "iosParameters": {
+      "iosFallbackLink": "https://www.acme.com",
+      "iosAppStoreId": "1308885491"
+    }
+  },
+  "suffix": {
+    "option": "SHORT"
+  }
+}
+```
+
+Deploying the server to production is outside the scope of this tutorial, but you can use this guide from Digital Ocean to get setup quickly. You can skip *Step 1 — Building the Go Web Application* as the server has been provided already.
+https://www.digitalocean.com/community/tutorials/how-to-deploy-a-go-web-application-using-nginx-on-ubuntu-18-04
